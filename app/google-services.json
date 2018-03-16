@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "568830793763",
+    "firebase_url": "https://riddle-the-flag.firebaseio.com",
+    "project_id": "riddle-the-flag",
+    "storage_bucket": "riddle-the-flag.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:568830793763:android:83c2c3445f962373",
+        "android_client_info": {
+          "package_name": "com.example.marinac.riddletheflag"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "568830793763-pqo93q1hnkg3ho1q7kmq249dfpf10cef.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.marinac.riddletheflag",
+            "certificate_hash": "3e3f9a77a88577ae2552466d7d47e143391ac02a"
+          }
+        },
+        {
+          "client_id": "568830793763-l46305rhbvhlh6oq7f9vq3tn206q3aek.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.marinac.riddletheflag",
+            "certificate_hash": "620b63e3ba5e486c464e5ff1758593d7b79ddbdd"
+          }
+        },
+        {
+          "client_id": "568830793763-fcgs6dad58k2d5fl1m6mkdo2jbgdii23.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCRgE2_0vFpxJhdRvVe9XIKAgAm87onfs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "568830793763-fcgs6dad58k2d5fl1m6mkdo2jbgdii23.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
