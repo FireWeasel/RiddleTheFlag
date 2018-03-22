@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,6 +22,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     //setting fields
     EditText nameTB, passTB;
     private FirebaseAuth mAuth;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,8 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         mAuth = FirebaseAuth.getInstance();
 
         nameTB = findViewById(R.id.emailTb);
-        passTB = findViewById(R.id.passTB);
+        passTB = findViewById(R.id.passTb);
+        progressBar = findViewById(R.id.progressBar);
 
         findViewById(R.id.registerBtn).setOnClickListener(this);
         findViewById(R.id.signInBtn).setOnClickListener(this);
@@ -72,6 +75,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -87,5 +91,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
                  }
             }
         });
+        progressBar.setVisibility(View.GONE);
     }
 }
