@@ -16,4 +16,5 @@
     </string>
     <string name="action_register_new_view">Don\'t have account? Register!</string>
     <string name="action_register">Register</string>
+    <string name="title_activity_map">Map</string>
 </resources>

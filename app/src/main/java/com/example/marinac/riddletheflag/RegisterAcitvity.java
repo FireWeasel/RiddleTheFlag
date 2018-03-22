@@ -6,16 +6,19 @@ import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 
 public class RegisterAcitvity extends AppCompatActivity implements View.OnClickListener{
 
+    ProgressBar progressBar;
     EditText nameTB, passTB;
     private FirebaseAuth mAuth;
 
@@ -27,6 +30,7 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
 
         nameTB = findViewById(R.id.nameTB);
         passTB = findViewById(R.id.passTB);
+        progressBar = findViewById(R.id.progressBar);
 
         findViewById(R.id.registerBtn).setOnClickListener(this);
     }
@@ -58,12 +62,24 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
             return;
         }
 
+        progressBar.setVisibility(View.VISIBLE);
+
         mAuth.createUserWithEmailAndPassword(email, pass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
+                progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful())
                 {
-                    Toast.makeText(getApplicationContext(),"User registered successfully!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"User registered successfully!", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    if(task.getException() instanceof FirebaseAuthUserCollisionException)
+                    {
+                        Toast.makeText(getApplicationContext(),"You are already registered", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
