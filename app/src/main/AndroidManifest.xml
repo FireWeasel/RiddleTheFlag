@@ -41,13 +41,14 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyATopLFkzqUgWV1oxc_-IasilbHt7sDMmI" />
+            android:value="AIzaSyBLMCUe90gExMmcNA6nPXR35lr5AsQAe28" />
 
         <activity android:name=".RegisterAcitvity" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_activity_map"></activity>
+            android:label="@string/title_activity_map">
+        </activity>
     </application>
 
 </manifest>
