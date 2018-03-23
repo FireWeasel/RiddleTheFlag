@@ -34,7 +34,7 @@ public class LauncherActivity extends AppCompatActivity {
     public void checkUser(){
         if(mAuth.getCurrentUser() != null)
         {
-            Intent i = new Intent(LauncherActivity.this, MapActivity.class);
+            Intent i = new Intent(LauncherActivity.this, Drawer.class);
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(i);
             finish();
