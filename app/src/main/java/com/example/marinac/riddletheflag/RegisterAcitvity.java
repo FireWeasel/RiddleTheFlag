@@ -22,24 +22,52 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.example.marinac.riddletheflag.User;
 
 
 public class RegisterAcitvity extends AppCompatActivity implements View.OnClickListener{
 
-    ProgressBar progressBar;
+    //fields for GUI elements
+    private ProgressBar progressBar;
     private EditText emailTb, passTB, nameTb;
+    private ImageView iv;
+
+    //
     private Drawable d;
+    private Uri uri;
+
+
+    //Firebase fields
     private FirebaseAuth mAuth;
     private StorageReference mStorageRef;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
+
+
+
+    //static fields for permissions and picture size
     private static final int SELECTED_PICTURE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
-    ImageView iv;
+    private static final int pHeight = 512;
+    private static final int pLength = 512;
+
+    //
+    private String imageName;
+    private String userId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,12 +76,14 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
 
         mAuth = FirebaseAuth.getInstance();
         mStorageRef = FirebaseStorage.getInstance().getReference();
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
 
         emailTb = findViewById(R.id.emailTb);
         passTB = findViewById(R.id.passTB);
         nameTb = findViewById(R.id.NameTb);
         progressBar = findViewById(R.id.progressBar);
-        iv = (ImageView)findViewById(R.id.profileImageView);
+        iv = findViewById(R.id.profileImageView);
 
         findViewById(R.id.registerBtn).setOnClickListener(this);
         findViewById(R.id.uploadPictureBtn).setOnClickListener(this);
@@ -61,12 +91,13 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
         emailTb.setOnClickListener(this);
         passTB.setOnClickListener(this);
         nameTb.setOnClickListener(this);
+
     }
 
     private void RegisterUser(){
         String email = emailTb.getText().toString().trim();
         String pass = passTB.getText().toString().trim();
-        String name = nameTb.getText().toString().trim();
+        final String name = nameTb.getText().toString().trim();
 
         if(email.isEmpty()){
             emailTb.setError("Email is required!");
@@ -104,8 +135,22 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                 progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful())
                 {
-                    Toast.makeText(getApplicationContext(),"User registered successfully!", Toast.LENGTH_SHORT).show();
-                    startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
+                    userId = mAuth.getUid();
+                    imageName = name + ".jpg";
+
+                    StorageReference storageReference = mStorageRef.child("users/" + userId + "/" + imageName);
+                    storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            Uri downloadUri = taskSnapshot.getDownloadUrl();
+                            User user = new User(name, 0, downloadUri.toString(), "Novice");
+
+                            myRef.child("users").child(userId).setValue(user);
+                            Toast.makeText(getApplicationContext(),"User registered successfully!", Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
+                        }
+                    });
                 }
                 else {
                     if(task.getException() instanceof FirebaseAuthUserCollisionException)
@@ -153,11 +198,15 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
 
 
                  } else {
-                     Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                     startActivityForResult(i, SELECTED_PICTURE);
+                     getPictureFromStorage();
                  }
                  break;
          }
+    }
+
+    public void getPictureFromStorage(){
+        Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(i, SELECTED_PICTURE);
     }
 
 
@@ -169,8 +218,7 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(i, SELECTED_PICTURE);
+                    getPictureFromStorage();
                 } else {
 
                     Toast.makeText(this, "Permission was denied!",Toast.LENGTH_SHORT).show();
@@ -188,7 +236,8 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
         {
             case SELECTED_PICTURE:
                 if(resultCode==RESULT_OK){
-                    Uri uri = data.getData();
+                    uri = data.getData();
+
                     String[]projection = {MediaStore.Images.Media.DATA};
 
                     Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
@@ -209,3 +258,4 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
         }
     }
 }
+
