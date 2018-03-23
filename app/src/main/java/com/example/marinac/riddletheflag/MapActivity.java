@@ -32,11 +32,7 @@ import java.util.List;
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-
-    private Button button;
-    private TextView textView;
     private LocationManager locationManager;
-    private LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,15 +129,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 }
             });
         }
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                textView.setText("a , b");
-            }
-        });
-
     }
 
 

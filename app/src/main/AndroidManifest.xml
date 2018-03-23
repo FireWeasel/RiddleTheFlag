@@ -42,7 +42,7 @@
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyATopLFkzqUgWV1oxc_-IasilbHt7sDMmI" />
+            android:value="AIzaSyBLMCUe90gExMmcNA6nPXR35lr5AsQAe28" />
 
         <activity android:name=".RegisterAcitvity"
             android:theme="@style/AppTheme.NoActionBar"/>
@@ -50,10 +50,15 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".MapActivity"
+<<<<<<< HEAD
             android:label="@string/title_activity_map"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".SignInActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+=======
+            android:label="@string/title_activity_map">
+        </activity>
+>>>>>>> c097fcc85abe13256dd6844886c910b5be2542a8
     </application>
 
 </manifest>
