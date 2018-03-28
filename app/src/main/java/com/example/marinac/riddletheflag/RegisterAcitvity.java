@@ -144,7 +144,7 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                             Uri downloadUri = taskSnapshot.getDownloadUrl();
-                            User user = new User(name, 0, downloadUri.toString(), "Novice");
+                            User user = new User(name, downloadUri.toString(), "Novice");
 
                             myRef.child("users").child(userId).setValue(user);
                             Toast.makeText(getApplicationContext(),"User registered successfully!", Toast.LENGTH_SHORT).show();
