@@ -1,7 +1,14 @@
 package com.example.marinac.riddletheflag;
 
+import android.*;
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,22 +25,37 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.android.gms.maps.CameraUpdateFactory;
+
+import java.text.DecimalFormat;
 
 public class Drawer extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference myRef;
     private String userId;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 2;
+    private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 3;
     TextView nameView, emailView;
+    SupportMapFragment map;
+    private GoogleMap mMap;
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +63,9 @@ public class Drawer extends AppCompatActivity
         setContentView(R.layout.activity_drawer);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-        myRef = FirebaseDatabase.getInstance().getReference().child("users");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        map = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -67,12 +90,27 @@ public class Drawer extends AppCompatActivity
         View header = navigationView.getHeaderView(0);
         nameView = (TextView)header.findViewById(R.id.nameTextView);
         emailView = (TextView) header.findViewById(R.id.profileEmailVIew);
+        map.onCreate(savedInstanceState);
+        map.getMapAsync(this);
+        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
         LoadUser();
+        GetFlags();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
     }
 
     public boolean checkLocationPermission(){
         if (ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
             // Should we show an explanation?
@@ -86,7 +124,16 @@ public class Drawer extends AppCompatActivity
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
             return false;
-        } else {
+        }
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
+
+            }else {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_FINE_LOCATION);
+            }
+            return false;
+        }else {
             return true;
         }
     }
@@ -148,6 +195,7 @@ public class Drawer extends AppCompatActivity
         return true;
     }
     public void LoadUser(){
+        myRef = FirebaseDatabase.getInstance().getReference().child("users");
         userId = mAuth.getUid();
         myRef.child(userId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -156,6 +204,44 @@ public class Drawer extends AppCompatActivity
                 nameView.setText(user.name);
                 emailView.setText(user.rank);
                 Log.d("user", user.toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void GetFlags(){
+        myRef = FirebaseDatabase.getInstance().getReference().child("flags");
+        myRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                Double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                Double longtitude = dataSnapshot.child("longtitude").getValue(Double.class);
+                    LatLng location = new LatLng(
+                            latitude,
+                            longtitude
+                    );
+                    Log.d("location", location.toString());
+                    mMap.addMarker(new MarkerOptions()
+                            .position(location));
+               // Log.d("locations", dataSnapshot.child("latitude").toString());
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
