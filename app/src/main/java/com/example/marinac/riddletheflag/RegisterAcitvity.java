@@ -1,5 +1,6 @@
 package com.example.marinac.riddletheflag;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -33,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import com.example.marinac.riddletheflag.User;
@@ -135,22 +137,26 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                 progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful())
                 {
-                    userId = mAuth.getUid();
-                    imageName = name + ".jpg";
+                    if(imageName!= null) {
+                        userId = mAuth.getUid();
+                        imageName = name + ".jpg";
 
-                    StorageReference storageReference = mStorageRef.child("users/" + userId + "/" + imageName);
-                    storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        StorageReference storageReference = mStorageRef.child("users/" + userId + "/" + imageName);
+                        storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            Uri downloadUri = taskSnapshot.getDownloadUrl();
-                            User user = new User(name, downloadUri.toString(), "Novice");
+                                Uri downloadUri = taskSnapshot.getDownloadUrl();
+                                User user = new User(name, downloadUri.toString(), "Novice");
 
-                            myRef.child("users").child(userId).setValue(user);
-                            Toast.makeText(getApplicationContext(),"User registered successfully!", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
-                        }
-                    });
+                                myRef.child("users").child(userId).setValue(user);
+                                Toast.makeText(getApplicationContext(), "User registered successfully!", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
+                            }
+                        });
+                    }else {
+                        Toast.makeText(getApplicationContext(),"Please select an image", Toast.LENGTH_LONG).show();
+                    }
                 }
                 else {
                     if(task.getException() instanceof FirebaseAuthUserCollisionException)

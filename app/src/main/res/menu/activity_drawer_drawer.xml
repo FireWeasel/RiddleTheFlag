@@ -5,21 +5,18 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/friendListBtn"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:title="Friend List" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/foundFlagsBtn"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:title="Found flags" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/addFlagsBtn"
+            android:enabled="false"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Add flag" />
         <item
             android:id="@+id/nav_signout"
             android:icon="@drawable/ic_exit_to_app_black_24dp"

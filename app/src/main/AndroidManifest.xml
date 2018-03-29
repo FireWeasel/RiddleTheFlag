@@ -12,10 +12,13 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
-    <!-- To auto-complete the email text field in the login form with the user's emails
+    <!--
+    To auto-complete the email text field in the login form with the user's emails
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />-->
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    -->
+
 
     <!-- Permissions for storage access -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -65,7 +68,12 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".FlagActivity"
-            android:label="@string/title_activity_flag"></activity>
+            android:label="@string/title_activity_flag"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <activity android:name=".FriendActivity"></activity>
     </application>
 
 </manifest>

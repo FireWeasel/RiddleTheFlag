@@ -25,6 +25,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -41,10 +42,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
-import java.text.DecimalFormat;
-
 public class Drawer extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,View.OnClickListener {
 
     FirebaseAuth mAuth;
     FirebaseDatabase database;
@@ -56,6 +55,7 @@ public class Drawer extends AppCompatActivity
     SupportMapFragment map;
     private GoogleMap mMap;
     private LocationManager locationManager;
+    Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,14 +68,8 @@ public class Drawer extends AppCompatActivity
         map = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.setBackCurrentLocation);
+        fab.setOnClickListener(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -105,7 +99,25 @@ public class Drawer extends AppCompatActivity
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
+            locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+
+            Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+
+            if(location!= null)
+            {
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()),13));
+                CameraPosition cameraPosition = new CameraPosition.Builder()
+                        .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                        .zoom(17)
+                        .bearing(90)
+                        .tilt(40)
+                        .build();
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+            }
         }
+
     }
 
     public boolean checkLocationPermission(){
@@ -164,7 +176,7 @@ public class Drawer extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            return true;
+            startActivity(new Intent(Drawer.this, SettingsActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
@@ -173,16 +185,14 @@ public class Drawer extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
+        if (id == R.id.friendListBtn) {
+            startActivity(new Intent(Drawer.this, FriendActivity.class));
+        } else if (id == R.id.foundFlagsBtn) {
+            startActivity(new Intent(Drawer.this, FlagActivity.class));
+        } else if (id == R.id.addFlagsBtn) {
 
         } else if (id == R.id.nav_signout) {
             mAuth.signOut();
@@ -226,7 +236,6 @@ public class Drawer extends AppCompatActivity
                     Log.d("location", location.toString());
                     mMap.addMarker(new MarkerOptions()
                             .position(location));
-               // Log.d("locations", dataSnapshot.child("latitude").toString());
             }
 
             @Override
@@ -249,5 +258,36 @@ public class Drawer extends AppCompatActivity
 
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId())
+        {
+            case R.id.setBackCurrentLocation:
+                if (ActivityCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    mMap.setMyLocationEnabled(true);
+                    locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                    Criteria criteria = new Criteria();
+
+                    Location location = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
+
+                    if(location!= null)
+                    {
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(), location.getLongitude()),13));
+                        CameraPosition cameraPosition = new CameraPosition.Builder()
+                                .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                                .zoom(17)
+                                .bearing(90)
+                                .tilt(40)
+                                .build();
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+                    }
+                }
+                break;
+        }
     }
 }

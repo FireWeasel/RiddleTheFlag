@@ -10,6 +10,7 @@ public class User {
     public String rank;
 
     public User(){}
+
     public User(String name, String picture, String rank) {
         this.name = name;
         this.picture = picture;
