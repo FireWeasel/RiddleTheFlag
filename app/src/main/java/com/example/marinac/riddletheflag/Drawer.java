@@ -32,6 +32,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -222,20 +223,34 @@ public class Drawer extends AppCompatActivity
             }
         });
     }
+
+    private Marker myMarker;
     public void GetFlags(){
+
         myRef = FirebaseDatabase.getInstance().getReference().child("flags");
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(Drawer.this));
                 Double latitude = dataSnapshot.child("latitude").getValue(Double.class);
                 Double longtitude = dataSnapshot.child("longtitude").getValue(Double.class);
+//                String difficulty = dataSnapshot.child("difficulty").getValue(int.class);
+                String hint = dataSnapshot.child("hint").getValue(String.class);
+//                String points = dataSnapshot.child("hint").getValue(int.class);
+                String riddle = dataSnapshot.child("riddle").getValue(String.class);
                     LatLng location = new LatLng(
                             latitude,
                             longtitude
                     );
                     Log.d("location", location.toString());
-                    mMap.addMarker(new MarkerOptions()
-                            .position(location));
+                    String title = "Flag";
+                    String snippet = "Riddle: "
+                                     + riddle;
+                    MarkerOptions options = new MarkerOptions()
+                            .position(location)
+                            .title(title)
+                            .snippet(snippet);
+                    mMap.addMarker(options);
             }
 
             @Override
