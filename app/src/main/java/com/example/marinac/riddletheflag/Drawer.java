@@ -10,12 +10,14 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -61,6 +63,7 @@ public class Drawer extends AppCompatActivity
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference myRef;
+    DatabaseReference myRef2;
     private String userId;
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 2;
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 3;
@@ -68,8 +71,6 @@ public class Drawer extends AppCompatActivity
     SupportMapFragment map;
     private GoogleMap mMap;
     private LocationManager locationManager;
-    private Map<MarkerOptions, Flag> allMarkers;
-    Location location;
     private List<Flag> userFlags;
 
     @Override
@@ -78,8 +79,6 @@ public class Drawer extends AppCompatActivity
         setContentView(R.layout.activity_drawer);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
-
-        allMarkers = new HashMap<MarkerOptions, Flag>();
         userFlags = new ArrayList<>();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -138,7 +137,6 @@ public class Drawer extends AppCompatActivity
                 @Override
                 public boolean onMarkerClick(final Marker marker) {
                     String riddleToSolve = marker.getSnippet();
-
                     Toast.makeText(getApplicationContext(), "Test", Toast.LENGTH_LONG).show();
                     AlertDialog.Builder mBuilder = new AlertDialog.Builder(Drawer.this);
                     View mView = getLayoutInflater().inflate(R.layout.dialog_marker, null);
@@ -159,9 +157,17 @@ public class Drawer extends AppCompatActivity
                             {
                                 userId = mAuth.getUid();
                                 myRef.child(userId).child("flags").child(name).setValue(flag);
+                                myRef2 = FirebaseDatabase.getInstance().getReference().child("flags");
+                                User user = new User();
+                                user.name = userId;
+                                myRef2.child(name).child("users").child(name).setValue(user);
                                 Log.d("status", "wohoo");
+                                mMap.clear();
+                                GetFlags();
                             }
-                            Log.d("marker name", flag.name);
+                            else {
+                                Toast.makeText(getApplicationContext(), "Wrong answer!", Toast.LENGTH_LONG).show();
+                            }
                         }
                     });
                     mBuilder.setView(mView);
@@ -268,11 +274,11 @@ public class Drawer extends AppCompatActivity
                 nameView.setText(user.name);
                 emailView.setText(user.rank);
                 Log.d("user", user.toString());
-                for (DataSnapshot snapshot: dataSnapshot.child("flags").getChildren()){
-                    Flag flag = (Flag)snapshot.getValue(Flag.class);
-                    userFlags.add(flag);
-                    Log.d("result", flag.toString());
-                }
+//                for (DataSnapshot snapshot: dataSnapshot.child("flags").getChildren()){
+//                    Flag flag = (Flag)snapshot.getValue(Flag.class);
+//                    userFlags.add(flag);
+//                    Log.d("result", flag.toString());
+//                }
             }
 
             @Override
@@ -282,22 +288,33 @@ public class Drawer extends AppCompatActivity
         });
     }
 
-    private Marker myMarker;
+
     public void GetFlags(){
 
         myRef = FirebaseDatabase.getInstance().getReference().child("flags");
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                //mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter(Drawer.this));
                 Double latitude = dataSnapshot.child("latitude").getValue(Double.class);
                 Double longtitude = dataSnapshot.child("longtitude").getValue(Double.class);
-//                String difficulty = dataSnapshot.child("difficulty").getValue(int.class);
                 String hint = dataSnapshot.child("hint").getValue(String.class);
-//                String points = dataSnapshot.child("hint").getValue(int.class);
                 String riddle = dataSnapshot.child("riddle").getValue(String.class);
                 Flag flag = dataSnapshot.getValue(Flag.class);
                 String currentName = flag.name;
+                List<Flag> userFlags = new ArrayList<>();
+                userId = mAuth.getUid();
+
+                for(DataSnapshot snapshot:dataSnapshot.child("users").getChildren()){
+                    User usr = (User)snapshot.getValue(User.class);
+                    String userName = usr.name;
+                    Log.d("extracted name", usr.name);
+                    Log.d("current user name", userId);
+                    if(userId.equals(userName)){
+                        userFlags.add(flag);
+                    }
+                }
+
+
                     LatLng location = new LatLng(
                             latitude,
                             longtitude
@@ -311,27 +328,66 @@ public class Drawer extends AppCompatActivity
                             .title(title)
                             .snippet(snippet);
 
-
-
-                    User user = dataSnapshot.child("users").getValue(User.class);
-
-                for(Flag f : userFlags){
-                    if(!f.name.equals(currentName)){
-                        Marker maker = mMap.addMarker(options);
-                        maker.setTag(flag);
+                if(!userFlags.isEmpty()){
+                    for(Flag f: userFlags){
+                        if(!f.name.equals(currentName)){
+                            Marker maker = mMap.addMarker(options);
+                            maker.setTag(flag);
+                        }
                     }
                 }
-
+                else {
+                    Marker maker = mMap.addMarker(options);
+                    maker.setTag(flag);
+                    Log.d("bla  ", "bla");
+                }
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                Double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                Double longtitude = dataSnapshot.child("longtitude").getValue(Double.class);
+                String hint = dataSnapshot.child("hint").getValue(String.class);
+                String riddle = dataSnapshot.child("riddle").getValue(String.class);
+                Flag flag = dataSnapshot.getValue(Flag.class);
+                String currentName = flag.name;
+                LatLng location = new LatLng(
+                        latitude,
+                        longtitude
+                );
+                Log.d("location", location.toString());
+                String title = "Flag";
+                String snippet = "Riddle: "
+                        + riddle;
+                MarkerOptions options = new MarkerOptions()
+                        .position(location)
+                        .title(title)
+                        .snippet(snippet);
+                Marker maker = mMap.addMarker(options);
+                maker.setTag(flag);
 
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                Double latitude = dataSnapshot.child("latitude").getValue(Double.class);
+                Double longtitude = dataSnapshot.child("longtitude").getValue(Double.class);
+                String hint = dataSnapshot.child("hint").getValue(String.class);
+                String riddle = dataSnapshot.child("riddle").getValue(String.class);
+                Flag flag = dataSnapshot.getValue(Flag.class);
+                String currentName = flag.name;
+                LatLng location = new LatLng(
+                        latitude,
+                        longtitude
+                );
+                Log.d("location", location.toString());
+                String title = "Flag";
+                String snippet = "Riddle: "
+                        + riddle;
+                MarkerOptions options = new MarkerOptions()
+                        .position(location)
+                        .title(title)
+                        .snippet(snippet);
             }
 
             @Override

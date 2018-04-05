@@ -81,7 +81,6 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             public void onComplete(@NonNull Task<AuthResult> task) {
                  if(task.isSuccessful())
                  {
-                     //Toast.makeText(getApplicationContext(),"User logged in successfully!", Toast.LENGTH_LONG).show();
                      Intent intent = new Intent(SignInActivity.this, Drawer.class);
                      intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                      startActivity(intent);

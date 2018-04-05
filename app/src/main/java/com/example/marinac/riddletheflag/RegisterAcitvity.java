@@ -90,10 +90,6 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.registerBtn).setOnClickListener(this);
         findViewById(R.id.uploadPictureBtn).setOnClickListener(this);
 
-        emailTb.setOnClickListener(this);
-        passTB.setOnClickListener(this);
-        nameTb.setOnClickListener(this);
-
     }
 
     private void RegisterUser(){
@@ -137,7 +133,6 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                 progressBar.setVisibility(View.GONE);
                 if(task.isSuccessful())
                 {
-                    if(imageName!= null) {
                         userId = mAuth.getUid();
                         imageName = name + ".jpg";
 
@@ -154,9 +149,7 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                                 startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
                             }
                         });
-                    }else {
-                        Toast.makeText(getApplicationContext(),"Please select an image", Toast.LENGTH_LONG).show();
-                    }
+
                 }
                 else {
                     if(task.getException() instanceof FirebaseAuthUserCollisionException)
