@@ -14,4 +14,6 @@ public class Flag {
         this.name = name;
         this.location = location;
     }
+
+    public Flag (){}
 }

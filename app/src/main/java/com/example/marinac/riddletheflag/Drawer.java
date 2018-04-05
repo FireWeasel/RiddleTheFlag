@@ -10,6 +10,7 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -47,6 +48,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class Drawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,View.OnClickListener {
 
@@ -60,7 +68,9 @@ public class Drawer extends AppCompatActivity
     SupportMapFragment map;
     private GoogleMap mMap;
     private LocationManager locationManager;
+    private Map<MarkerOptions, Flag> allMarkers;
     Location location;
+    private List<Flag> userFlags;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +78,9 @@ public class Drawer extends AppCompatActivity
         setContentView(R.layout.activity_drawer);
         mAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
+
+        allMarkers = new HashMap<MarkerOptions, Flag>();
+        userFlags = new ArrayList<>();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         map = (SupportMapFragment)getSupportFragmentManager().findFragmentById(R.id.map);
@@ -123,21 +136,32 @@ public class Drawer extends AppCompatActivity
             }
             mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                 @Override
-                public boolean onMarkerClick(Marker marker) {
+                public boolean onMarkerClick(final Marker marker) {
                     String riddleToSolve = marker.getSnippet();
 
                     Toast.makeText(getApplicationContext(), "Test", Toast.LENGTH_LONG).show();
                     AlertDialog.Builder mBuilder = new AlertDialog.Builder(Drawer.this);
                     View mView = getLayoutInflater().inflate(R.layout.dialog_marker, null);
-                    EditText inputAnswer = (EditText)mView.findViewById(R.id.answerTb);
+                    final EditText inputAnswer = (EditText)mView.findViewById(R.id.answerTb);
                     TextView riddle = (TextView)mView.findViewById(R.id.riddleLabel);
                     riddle.setText(riddleToSolve);
                     Button solve = (Button)mView.findViewById(R.id.solveRiddle);
+                    final Flag flag = (Flag)marker.getTag();
+                    final String name = flag.name;
+                    myRef = FirebaseDatabase.getInstance().getReference().child("users");
+
 
                     solve.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            Toast.makeText(getApplicationContext(), "Test", Toast.LENGTH_LONG).show();
+                            final String answer = inputAnswer.getText().toString().trim();
+                            if(name.equals(answer))
+                            {
+                                userId = mAuth.getUid();
+                                myRef.child(userId).child("flags").child(name).setValue(flag);
+                                Log.d("status", "wohoo");
+                            }
+                            Log.d("marker name", flag.name);
                         }
                     });
                     mBuilder.setView(mView);
@@ -244,6 +268,11 @@ public class Drawer extends AppCompatActivity
                 nameView.setText(user.name);
                 emailView.setText(user.rank);
                 Log.d("user", user.toString());
+                for (DataSnapshot snapshot: dataSnapshot.child("flags").getChildren()){
+                    Flag flag = (Flag)snapshot.getValue(Flag.class);
+                    userFlags.add(flag);
+                    Log.d("result", flag.toString());
+                }
             }
 
             @Override
@@ -267,6 +296,8 @@ public class Drawer extends AppCompatActivity
                 String hint = dataSnapshot.child("hint").getValue(String.class);
 //                String points = dataSnapshot.child("hint").getValue(int.class);
                 String riddle = dataSnapshot.child("riddle").getValue(String.class);
+                Flag flag = dataSnapshot.getValue(Flag.class);
+                String currentName = flag.name;
                     LatLng location = new LatLng(
                             latitude,
                             longtitude
@@ -279,7 +310,18 @@ public class Drawer extends AppCompatActivity
                             .position(location)
                             .title(title)
                             .snippet(snippet);
-                    mMap.addMarker(options);
+
+
+
+                    User user = dataSnapshot.child("users").getValue(User.class);
+
+                for(Flag f : userFlags){
+                    if(!f.name.equals(currentName)){
+                        Marker maker = mMap.addMarker(options);
+                        maker.setTag(flag);
+                    }
+                }
+
             }
 
             @Override
