@@ -111,4 +111,6 @@
     <string name="titleFlagLabel">Flag</string>
     <string name="riddleLabel">Riddle</string>
     <string name="answer">answer</string>
+    <string name="solve">Solve</string>
+    <string name="textview">TextView</string>
 </resources>

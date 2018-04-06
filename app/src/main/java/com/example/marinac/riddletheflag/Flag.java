@@ -9,6 +9,8 @@ public class Flag {
     public String hint;
     public int points;
     public String riddle;
+    public String description;
+    public String picture;
 
     public Flag(String name, LatLng location) {
         this.name = name;

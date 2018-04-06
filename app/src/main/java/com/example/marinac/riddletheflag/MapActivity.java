@@ -59,28 +59,28 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_ACESS_COARSE_LOCATION:
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                } else {
-
-                    Toast.makeText(this, "Permission was denied!",Toast.LENGTH_SHORT).show();
-                }
-                break;
-            case MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION:
-                if(grantResults.length>0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
-
-                }else {
-                    Toast.makeText(this, "Permission was denied!", Toast.LENGTH_SHORT).show();
-                }
-
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        switch (requestCode) {
+//            case MY_PERMISSIONS_REQUEST_ACESS_COARSE_LOCATION:
+//                // If request is cancelled, the result arrays are empty.
+//                if (grantResults.length > 0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                } else {
+//
+//                    Toast.makeText(this, "Permission was denied!",Toast.LENGTH_SHORT).show();
+//                }
+//                break;
+//            case MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION:
+//                if(grantResults.length>0
+//                        && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+//
+//                }else {
+//                    Toast.makeText(this, "Permission was denied!", Toast.LENGTH_SHORT).show();
+//                }
+//
+//        }
+//    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
