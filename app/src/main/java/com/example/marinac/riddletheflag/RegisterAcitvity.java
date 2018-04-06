@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -70,6 +71,13 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
     private String imageName;
     private String userId;
 
+    //
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 2;
+    private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 3;
+    private static final int MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION = 2;
+    private static final int MY_PERMISSIONS_REQUEST_ACESS_COARSE_LOCATION = 3;
+    private static int time_out = 3500;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,6 +98,36 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
         findViewById(R.id.registerBtn).setOnClickListener(this);
         findViewById(R.id.uploadPictureBtn).setOnClickListener(this);
 
+    }
+
+    public boolean checkLocationPermission(){
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        }
+        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)){
+
+            }else {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_FINE_LOCATION);
+            }
+            return false;
+        }else {
+            return true;
+        }
     }
 
     private void RegisterUser(){
@@ -146,10 +184,16 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
 
                                 myRef.child("users").child(userId).setValue(user);
                                 Toast.makeText(getApplicationContext(), "User registered successfully!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
+                                checkLocationPermission();
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                },time_out);
                             }
                         });
-
                 }
                 else {
                     if(task.getException() instanceof FirebaseAuthUserCollisionException)
@@ -162,7 +206,6 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                 }
             }
         });
-        progressBar.setVisibility(View.GONE);
     }
 
 
@@ -193,9 +236,6 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                      ActivityCompat.requestPermissions(RegisterAcitvity.this,
                              new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
                              MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-
-
-
                  } else {
                      getPictureFromStorage();
                  }
@@ -219,11 +259,9 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     getPictureFromStorage();
                 } else {
-
                     Toast.makeText(this, "Permission was denied!",Toast.LENGTH_SHORT).show();
                 }
                 break;
-
         }
     }
 

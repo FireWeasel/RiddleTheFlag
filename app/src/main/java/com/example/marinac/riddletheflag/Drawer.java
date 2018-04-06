@@ -53,7 +53,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Drawer extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+                   OnMapReadyCallback,
+                   View.OnClickListener {
 
     FirebaseAuth mAuth;
     FirebaseDatabase database;
@@ -87,7 +89,7 @@ public class Drawer extends AppCompatActivity
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.setBackCurrentLocation);
         fab.setOnClickListener(this);
-        checkLocationPermission();
+        //checkLocationPermission();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -112,7 +114,6 @@ public class Drawer extends AppCompatActivity
         LoadUser(navigationView.getMenu().getItem(2));
         GetFlags();
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
@@ -138,7 +139,6 @@ public class Drawer extends AppCompatActivity
 
         }
     }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -173,9 +173,10 @@ public class Drawer extends AppCompatActivity
                     TextView riddle = (TextView)mView.findViewById(R.id.riddleLabel);
                     TextView description = (TextView)mView.findViewById(R.id.descriptionTextBox);
                     riddle.setText(riddleToSolve);
-                    Button solve = (Button)mView.findViewById(R.id.solveRiddle);
+                    final Button solve = (Button)mView.findViewById(R.id.solveRiddle);
                     final Flag flag = (Flag)marker.getTag();
                     final String name = flag.name;
+                    final TextView flagname = (TextView)mView.findViewById(R.id.flagName);
                     description.setText(flag.description);
                     myRef = FirebaseDatabase.getInstance().getReference().child("users");
                     flagImageView = mView.findViewById(R.id.flagImage);
@@ -202,8 +203,12 @@ public class Drawer extends AppCompatActivity
                                 user.name = userId;
                                 myRef2.child(name).child("users").child(name).setValue(user);
                                 Log.d("status", "wohoo");
-                                //mMap.clear();
-                                //GetFlags();
+                                mMap.clear();
+                                GetFlags();
+                                solve.setText("Solved");
+                                solve.setEnabled(false);
+                                flagname.setText(name);
+                                flagname.setVisibility(View.VISIBLE);
                             }
                             else {
                                 Toast.makeText(getApplicationContext(), "Wrong answer!", Toast.LENGTH_LONG).show();
@@ -219,7 +224,6 @@ public class Drawer extends AppCompatActivity
         }
 
     }
-
     public boolean checkLocationPermission(){
         if (ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -249,7 +253,6 @@ public class Drawer extends AppCompatActivity
             return true;
         }
     }
-
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -259,14 +262,12 @@ public class Drawer extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.drawer, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -281,7 +282,6 @@ public class Drawer extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
-
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -338,8 +338,6 @@ public class Drawer extends AppCompatActivity
             }
         });
     }
-
-
     public void GetFlags(){
 
         myRef = FirebaseDatabase.getInstance().getReference().child("flags");
@@ -637,7 +635,6 @@ public class Drawer extends AppCompatActivity
             }
         });
     }
-
     @Override
     public void onClick(View view) {
         switch (view.getId())

@@ -1,8 +1,11 @@
 package com.example.marinac.riddletheflag;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.icu.text.UnicodeSetSpanner;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -23,6 +26,11 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     EditText nameTB, passTB;
     private FirebaseAuth mAuth;
     ProgressBar progressBar;
+    private static int time_out = 3500;
+    private static final int MY_PERMISSIONS_REQUEST_LOCATION = 2;
+    private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 3;
+    private static final int MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION = 2;
+    private static final int MY_PERMISSIONS_REQUEST_ACESS_COARSE_LOCATION = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,36 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.signInBtn:
                 LogInUser();
                 break;
+        }
+    }
+
+    public boolean checkLocationPermission(){
+        if (ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION)) {
+
+            } else {
+                // No explanation needed, we can request the permission.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+            return false;
+        }
+        if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED) {
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)){
+
+            }else {
+                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                        MY_PERMISSIONS_REQUEST_FINE_LOCATION);
+            }
+            return false;
+        }else {
+            return true;
         }
     }
 
@@ -81,15 +119,21 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             public void onComplete(@NonNull Task<AuthResult> task) {
                  if(task.isSuccessful())
                  {
-                     Intent intent = new Intent(SignInActivity.this, Drawer.class);
-                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                     startActivity(intent);
+                     checkLocationPermission();
+                     new Handler().postDelayed(new Runnable() {
+                         @Override
+                         public void run() {
+                             Intent intent = new Intent(SignInActivity.this, Drawer.class);
+                             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                             progressBar.setVisibility(View.GONE);
+                             startActivity(intent);
+                         }
+                     },time_out);
                  }
                  else  {
                          Toast.makeText(getApplicationContext(),task.getException().getMessage(),Toast.LENGTH_SHORT).show();
                  }
             }
         });
-        progressBar.setVisibility(View.GONE);
     }
 }
