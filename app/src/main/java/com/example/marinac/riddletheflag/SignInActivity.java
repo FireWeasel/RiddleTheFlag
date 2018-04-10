@@ -119,7 +119,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             public void onComplete(@NonNull Task<AuthResult> task) {
                  if(task.isSuccessful())
                  {
-                     checkLocationPermission();
+                     ///checkLocationPermission();
                      new Handler().postDelayed(new Runnable() {
                          @Override
                          public void run() {

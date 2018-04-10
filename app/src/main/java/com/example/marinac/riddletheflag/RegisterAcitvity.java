@@ -184,7 +184,7 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
 
                                 myRef.child("users").child(userId).setValue(user);
                                 Toast.makeText(getApplicationContext(), "User registered successfully!", Toast.LENGTH_SHORT).show();
-                                checkLocationPermission();
+                                //checkLocationPermission();
                                 new Handler().postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
