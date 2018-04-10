@@ -17,7 +17,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -97,6 +99,14 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
 
         findViewById(R.id.registerBtn).setOnClickListener(this);
         findViewById(R.id.uploadPictureBtn).setOnClickListener(this);
+        findViewById(R.id.registerCon).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(),0);
+                return true;
+            }
+        });
 
     }
 
