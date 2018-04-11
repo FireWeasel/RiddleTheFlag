@@ -15,6 +15,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
+import android.text.Layout;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -108,14 +109,6 @@ public class Drawer extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        findViewById(R.id.dialogCon).setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                return true;
-            }
-        });
 
 
 
@@ -123,7 +116,7 @@ public class Drawer extends AppCompatActivity
         nameView = (TextView) header.findViewById(R.id.nameTextView);
         emailView = (TextView) header.findViewById(R.id.profileEmailVIew);
         profileImage = (ImageView) header.findViewById(R.id.profilePictureView);
-        addMarkerBtn = (Button) navigationView.findViewById(R.id.addFlagsBtn);
+        addMarkerBtn = drawer.findViewById(R.id.addFlagsBtn);
         map.onCreate(savedInstanceState);
         map.getMapAsync(this);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -350,7 +343,7 @@ public class Drawer extends AppCompatActivity
         } else if (id == R.id.foundFlagsBtn) {
             startActivity(new Intent(Drawer.this, FlagActivity.class));
         } else if (id == R.id.addFlagsBtn) {
-
+            startActivity(new Intent(Drawer.this, AddMarkerActivity.class));
         } else if (id == R.id.nav_signout) {
             mAuth.signOut();
             startActivity(new Intent(this, LauncherActivity.class));
@@ -718,16 +711,4 @@ public class Drawer extends AppCompatActivity
         }
     }
 
-    public void createMarker()
-    {
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                MarkerOptions markerOptions = new MarkerOptions();
-                markerOptions.position(latLng);
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-                mMap.addMarker(markerOptions);
-            }
-        });
-    }
 }

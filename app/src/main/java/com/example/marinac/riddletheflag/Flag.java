@@ -4,7 +4,8 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class Flag {
     public String name;
-    public LatLng location;
+    public double latitude;
+    public double longtitude;
     public int difficulty;
     public String hint;
     public int points;
@@ -14,7 +15,8 @@ public class Flag {
 
     public Flag(String name, LatLng location) {
         this.name = name;
-        this.location = location;
+        this.latitude = location.latitude;
+        this.longtitude = location.longitude;
     }
 
     public Flag (){}

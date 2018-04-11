@@ -8,7 +8,7 @@
     android:padding="10dp">
 
     <ImageView
-        android:id="@+id/flagImage"
+        android:id="@+id/newMarkImage"
         android:layout_width="400dp"
         android:layout_height="310dp"
         android:layout_above="@+id/descriptionTextBox"
@@ -19,69 +19,72 @@
         app:layout_constraintTop_toBottomOf="@+id/flagName"
         app:srcCompat="@mipmap/ic_launcher" />
 
-    <TextView
-        android:id="@+id/descriptionTextBox"
+    <EditText
+        android:id="@+id/newMarkDescr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/riddleLabel"
         android:layout_centerHorizontal="true"
-        android:text="@string/textview"
+        android:layout_marginTop="20dp"
+        android:hint="Enter Description"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flagImage" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/riddleLabel"
+    <EditText
+        android:id="@+id/newMarkRiddle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/answerTb"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="@string/riddleLabel"
+        android:layout_marginTop="17dp"
+        android:hint="Enter riddle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/descriptionTextBox" />
+        app:layout_constraintTop_toBottomOf="@+id/newMarkDescr" />
 
     <EditText
-        android:id="@+id/answerTb"
+        android:id="@+id/newMarkAnswer"
         android:layout_width="wrap_content"
         android:layout_height="44dp"
         android:layout_above="@+id/solveRiddle"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="29dp"
         android:ems="10"
-        android:hint="@string/answer"
+        android:hint="Enter answer"
         android:inputType="textPersonName"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/riddleLabel" />
+        app:layout_constraintTop_toBottomOf="@+id/newMarkRiddle" />
 
     <Button
-        android:id="@+id/solveRiddle"
+        android:id="@+id/addRiddle"
         android:layout_width="211dp"
         android:layout_height="37dp"
         android:layout_alignEnd="@+id/answerTb"
         android:layout_centerVertical="true"
-        android:text="@string/solve"
+        android:text="Add Marker"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/answerTb"
-        app:layout_constraintVertical_bias="0.844" />
+        app:layout_constraintVertical_bias="0.057" />
 
-    <TextView
+    <EditText
         android:id="@+id/flagName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginTop="31dp"
+        android:hint="Flag Name"
         android:visibility="invisible"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/newMarkAnswer" />
 
 </android.support.constraint.ConstraintLayout>
