@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.location.Criteria;
 import android.location.Location;
@@ -35,6 +36,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -93,6 +95,7 @@ public class Drawer extends AppCompatActivity
         userFlags = new ArrayList<>();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
         map = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         setSupportActionBar(toolbar);
 
@@ -105,6 +108,8 @@ public class Drawer extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -199,7 +204,7 @@ public class Drawer extends AppCompatActivity
                     LatLng loc = new LatLng(marker.getPosition().latitude, marker.getPosition().longitude);
                     Circle circle = mMap.addCircle(new CircleOptions()
                             .center(loc)
-                            .radius(80)
+                            .radius(210)
                             .visible(false));
                     float[] distance = new float[2];
                     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -231,6 +236,7 @@ public class Drawer extends AppCompatActivity
                         URL url = new URL(flag.picture);
                         Glide.with(Drawer.this)
                                 .load(url)
+                                .apply(RequestOptions.circleCropTransform())
                                 .into(flagImageView);
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
@@ -262,6 +268,7 @@ public class Drawer extends AppCompatActivity
                     });
                     mBuilder.setView(mView);
                     AlertDialog dialog = mBuilder.create();
+                    //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     dialog.show();
                     return true;
                 }

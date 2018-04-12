@@ -5,7 +5,18 @@
     android:id="@+id/registerCon"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.marinac.riddletheflag.RegisterAcitvity">
+    tools:context="com.example.marinac.riddletheflag.RegisterAcitvity"
+    android:background="@color/white">
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="820dp"
+        android:layout_height="0dp"
+        android:background="@drawable/launcher_background_darker"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -21,8 +32,9 @@
         android:id="@+id/registerBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginTop="8dp"
+        android:background="@drawable/button_rounding_settings"
         android:text="@string/action_register"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -40,7 +52,8 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailTb" />
+        app:layout_constraintTop_toBottomOf="@+id/emailTb"
+        android:background="@drawable/text_view_style_settings"/>
 
     <EditText
         android:id="@+id/emailTb"
@@ -53,13 +66,14 @@
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NameTb" />
+        app:layout_constraintTop_toBottomOf="@+id/NameTb"
+        android:background="@drawable/text_view_style_settings"/>
 
     <ImageView
         android:id="@+id/profileImageView"
-        android:layout_width="152dp"
-        android:layout_height="143dp"
-        android:layout_marginTop="101dp"
+        android:layout_width="0dp"
+        android:layout_height="212dp"
+        android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -68,18 +82,19 @@
         android:id="@+id/profileEmailVIew"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="48dp"
         android:text="Register to RiddleTheFlag"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileImageView" />
+        app:layout_constraintTop_toBottomOf="@+id/profileImageView"
+        android:textColor="@color/white"/>
 
     <EditText
         android:id="@+id/NameTb"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
         android:hint="Name"
         android:inputType="textPersonName"
@@ -87,7 +102,8 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/profileEmailVIew"
-        tools:text="@string/nameTextEdit" />
+        tools:text="@string/nameTextEdit"
+        android:background="@drawable/text_view_style_settings"/>
 
     <Button
         android:id="@+id/uploadPictureBtn"
@@ -98,6 +114,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/passTB"
-        tools:text="@string/pictureUploadButton" />
+        tools:text="@string/pictureUploadButton"
+        android:background="@drawable/button_rounding_settings"/>
 
 </android.support.constraint.ConstraintLayout>
