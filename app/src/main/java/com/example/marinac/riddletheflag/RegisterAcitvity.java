@@ -51,7 +51,6 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
     private ImageView iv;
 
     //
-    private Drawable d;
     private Uri uri;
 
 
@@ -76,8 +75,6 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
     //
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 2;
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 3;
-    private static final int MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION = 2;
-    private static final int MY_PERMISSIONS_REQUEST_ACESS_COARSE_LOCATION = 3;
     private static int time_out = 3500;
 
 
@@ -194,14 +191,8 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
 
                                 myRef.child("users").child(userId).setValue(user);
                                 Toast.makeText(getApplicationContext(), "User registered successfully!", Toast.LENGTH_SHORT).show();
-                                //checkLocationPermission();
-                                new Handler().postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                },time_out);
+                                startActivity(new Intent(RegisterAcitvity.this, Drawer.class));
+                                progressBar.setVisibility(View.GONE);
                             }
                         });
                 }
@@ -284,19 +275,6 @@ public class RegisterAcitvity extends AppCompatActivity implements View.OnClickL
             case SELECTED_PICTURE:
                 if(resultCode==RESULT_OK){
                     uri = data.getData();
-
-                    String[]projection = {MediaStore.Images.Media.DATA};
-
-                    Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(projection[0]);
-                    String filepath = cursor.getString(columnIndex);
-
-                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filepath);
-                    d = new BitmapDrawable(yourSelectedImage);
-
-                    iv.setBackground(d);
                 }
                 else {
                     Toast.makeText(getApplicationContext(),"Something went wrong!",Toast.LENGTH_SHORT);

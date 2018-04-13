@@ -268,7 +268,6 @@ public class Drawer extends AppCompatActivity
                     });
                     mBuilder.setView(mView);
                     AlertDialog dialog = mBuilder.create();
-                    //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     dialog.show();
                     return true;
                 }

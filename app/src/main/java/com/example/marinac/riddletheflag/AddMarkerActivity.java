@@ -53,7 +53,6 @@ public class AddMarkerActivity extends FragmentActivity implements OnMapReadyCal
     private static final int SELECTED_PICTURE = 1;
     private static final int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 2;
 
-    private Drawable d;
     private Uri uri;
 
     private Button uploadBtn;
@@ -62,7 +61,6 @@ public class AddMarkerActivity extends FragmentActivity implements OnMapReadyCal
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_marker);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mStorageRef = FirebaseStorage.getInstance().getReference();
@@ -120,26 +118,22 @@ public class AddMarkerActivity extends FragmentActivity implements OnMapReadyCal
                         public boolean onMarkerClick(Marker marker) {
                             AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddMarkerActivity.this);
                             View mView = getLayoutInflater().inflate(R.layout.add_marker_dialog, null);
-                            //mView.setBackgroundResource(android.R.color.transparent);
                             final EditText riddle = mView.findViewById(R.id.newMarkRiddle);
                             final EditText answer = mView.findViewById(R.id.newMarkAnswer);
                             final EditText descr = mView.findViewById(R.id.newMarkDescr);
                             final Button addMarkerButton = mView.findViewById(R.id.addRiddle);
                             final EditText diff = mView.findViewById(R.id.difTB);
-                            //final ImageView imageView = mView.findViewById(R.id.newMarkImage);
                             final Button upldBtn = mView.findViewById(R.id.upldImg);
 
 
                             mBuilder.setView(mView);
                             AlertDialog dialog = mBuilder.create();
-                            //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                             dialog.show();
                             upldBtn.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     if (ContextCompat.checkSelfPermission(AddMarkerActivity.this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
                                             != PackageManager.PERMISSION_GRANTED) {
-                                        // Permission is not granted
                                         ActivityCompat.requestPermissions(AddMarkerActivity.this,
                                                 new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE},
                                                 MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
@@ -148,7 +142,6 @@ public class AddMarkerActivity extends FragmentActivity implements OnMapReadyCal
                                     }
                                 }
                             });
-                            //imageView.setBackground(d);
                             addMarkerButton.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -202,19 +195,16 @@ public class AddMarkerActivity extends FragmentActivity implements OnMapReadyCal
                     public boolean onMarkerClick(Marker marker) {
                         AlertDialog.Builder mBuilder = new AlertDialog.Builder(AddMarkerActivity.this);
                         View mView = getLayoutInflater().inflate(R.layout.add_marker_dialog, null);
-                        //mView.setBackgroundResource(android.R.color.transparent);
                         final EditText riddle = mView.findViewById(R.id.newMarkRiddle);
                         final EditText answer = mView.findViewById(R.id.newMarkAnswer);
                         final EditText descr = mView.findViewById(R.id.newMarkDescr);
                         final Button addMarkerButton = mView.findViewById(R.id.addRiddle);
                         final EditText diff = mView.findViewById(R.id.difTB);
-                        //final ImageView imageView = mView.findViewById(R.id.newMarkImage);
                         final Button upldBtn = mView.findViewById(R.id.upldImg);
 
 
                         mBuilder.setView(mView);
                         AlertDialog dialog = mBuilder.create();
-                        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         dialog.show();
                         upldBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -230,7 +220,6 @@ public class AddMarkerActivity extends FragmentActivity implements OnMapReadyCal
                                 }
                             }
                         });
-                        //imageView.setBackground(d);
                         addMarkerButton.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
@@ -241,7 +230,6 @@ public class AddMarkerActivity extends FragmentActivity implements OnMapReadyCal
                                 flag.hint = "test hint";
                                 flag.points = 1;
                                 flag.riddle = riddle.getText().toString();
-                                //flag.picture = "";
                                 StorageReference storageReference = mStorageRef.child("flags/" + flag.name + ".jpg");
                                 storageReference.putFile(uri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                                     @Override
@@ -299,19 +287,6 @@ public class AddMarkerActivity extends FragmentActivity implements OnMapReadyCal
             case SELECTED_PICTURE:
                 if (resultCode == RESULT_OK) {
                     uri = data.getData();
-
-                    String[] projection = {MediaStore.Images.Media.DATA};
-
-                    Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(projection[0]);
-                    String filepath = cursor.getString(columnIndex);
-
-                    Bitmap yourSelectedImage = BitmapFactory.decodeFile(filepath);
-                    d = new BitmapDrawable(yourSelectedImage);
-
-                    //imageView.setBackground(d);
                 } else {
                     Toast.makeText(getApplicationContext(), "Something went wrong!", Toast.LENGTH_SHORT);
                 }
